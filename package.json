@@ -4,5 +4,9 @@
 	"version": "0.0.1",
 	"dependencies": {
 		"socket.io": "1.4.5"
+	},
+	"respitory": {
+		"type": "git",
+		"url": "https://github.com/HoeenCoder/Cities.io.git"
 	}
 }
