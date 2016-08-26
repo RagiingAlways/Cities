@@ -3,6 +3,7 @@
 html, body{
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
+  overflow: hidden;
 }
 
 body{
@@ -34,7 +35,7 @@ h1{
 .nickname{
   padding: 10px;
   font: 0.9em 'Segoe UI';
-  width: 300px;
+  width: 20%;
   transition: box-shadow .4s ease;
   border: none;
 }
@@ -49,7 +50,7 @@ h1{
   font: 20px 'Segoe UI';
   padding: 8px;
   position: absolute;
-  height: 44px;
+  height: 6%;
 }
 
 .nickname, .ready{
@@ -57,5 +58,6 @@ h1{
 }
 
 #map{
-  border: 5px solid #000;
+  /*border: 5px solid #000;*/
+  background-image: url('images/map.png');
 }

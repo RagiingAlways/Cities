@@ -11,7 +11,7 @@ $(function(){
         var ctx = c.getContext('2d');
 
         $(c).attr('id', 'map').attr('width', '1400').attr('height', '1000');
-        $(c).css('background-image', 'url("images/map.png")');
         $('.main').html(c);
+	$('.main').css('margin', 0);
     });
 });
