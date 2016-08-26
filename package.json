@@ -6,7 +6,7 @@
 		"socket.io": "1.4.5",
 		"express": "4.14.0"
 	},
-	"respitory": {
+	"repository": {
 		"type": "git",
 		"url": "https://github.com/HoeenCoder/Cities.git"
 	}
