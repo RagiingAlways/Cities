@@ -55,3 +55,7 @@ h1{
 .nickname, .ready{
   outline: none;
 }
+
+#map{
+  border: 5px solid #000;
+}
