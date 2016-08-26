@@ -11,10 +11,6 @@ io.on('connection', function(socket) {
 
 app.use(express.static(__dirname + '/client/'));
 
-app.get('/', function(){
-	
-});
-
 http.listen(3000, function() {
 	console.log('Now listening on port 3000');
 });
