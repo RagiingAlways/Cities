@@ -5,6 +5,10 @@ html, body{
   font-family: 'Segoe UI', sans-serif;
 }
 
+body{
+  background-color: #a041ff;
+}
+
 header{
   text-align: center;
   background-color: #8000ff;
