@@ -30,8 +30,28 @@ h1{
   margin: 20px auto;
   text-align: center;
 }
+
 .nickname{
   padding: 10px;
   font: 0.9em 'Segoe UI';
   width: 300px;
+  transition: box-shadow .4s ease;
+  border: none;
+}
+
+.nickname:focus{
+  box-shadow: 0 0 10px #333;
+}
+
+.ready{
+  border: none;
+  background: #C6FF00;
+  font: 20px 'Segoe UI';
+  padding: 8px;
+  position: absolute;
+  height: 44px;
+}
+
+.nickname, .ready{
+  outline: none;
 }
