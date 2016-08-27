@@ -1,5 +1,11 @@
 $(function(){
-    //variables
+
+    $('.nickname').keypress(function(e){
+      if(e.which === 13){
+        $('.ready').click();
+      }
+    });
+
     $('.ready').click(function(){
         var nick = $('.nickname').val();
         //blank nickname
