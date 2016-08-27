@@ -34,7 +34,7 @@ h1{
 
 .nickname{
   padding: 10px;
-  font: 0.9em 'Segoe UI';
+  font: 18px 'Segoe UI';
   width: 20%;
   transition: box-shadow .4s ease;
   border: none;
