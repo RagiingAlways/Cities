@@ -42,7 +42,7 @@ io.on('connection', function(socket) {
 		level: level,
 		maxhp: maxhp,
 		hp: hp,
-		hue: Math.rounf(Math.random() * 360),
+		hue: Math.round(Math.random() * 360),
 		target: {x: 0, y: 0}
 	};
 	

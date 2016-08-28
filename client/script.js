@@ -97,6 +97,12 @@ function setUpSocket(socket) {
 			
 		}
 	});
+	
+	socket.on('kick', function(reason) {
+		alert('You were kicked from the game. reason: ' + reason);
+		socket.close();
+		global.disconnected = true;
+	});
 }
 
 function drawCircle(centerX, centerY, radius, sides, hue) {
