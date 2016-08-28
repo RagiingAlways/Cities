@@ -20,7 +20,7 @@ io.on('connection', function(socket) {
 	console.log('A user connected.');
 	
 	var radius = c.baseRadius;
-	var position = c.newPlayerInitialPosition == 'random' ? {x: Math.round(Math.random() * c.gameWidth), y: Math.round(Math.random() * c.gameHeight)} : c.newPlayerInitialPosition;
+	var position = c.newPlayerInitPosition == 'random' ? {x: Math.round(Math.random() * c.gameWidth), y: Math.round(Math.random() * c.gameHeight)} : c.newPlayerInitPosition;
 	var hp = c.defaulthp, maxhp = c.defaulthp;
 	
 	var tents = [{
@@ -49,7 +49,7 @@ io.on('connection', function(socket) {
 	socket.on('gotit', function(player) {
 		console.log('[INFO] ' + player.name + ' connecting.');
 		
-		if(users.findIndex(player.id) > -1) {
+		if(searchUsers(player.id)) {
 			console.log('[INFO] Player ID is already connected, kicking.');
             		socket.disconnect();
 		} else if(!validNick(player.name)) {
@@ -59,7 +59,7 @@ io.on('connection', function(socket) {
 			sockets[player.id] = socket;
 			
 			var radius = c.baseRadius;
-			var position = c.newPlayerInitialPosition == 'random' ? {x: Math.round(Math.random() * c.gameWidth), y: Math.round(Math.random() * c.gameHeight)} : c.newPlayerInitialPosition;
+			var position = c.newPlayerInitPosition == 'random' ? {x: Math.round(Math.random() * c.gameWidth), y: Math.round(Math.random() * c.gameHeight)} : c.newPlayerInitPosition;
 			var hp = c.defaulthp, maxhp = c.defaulthp;
 			
 			player.x = position.x;
@@ -84,7 +84,7 @@ io.on('connection', function(socket) {
 				gameWidth: c.gameWidth,
 				gameHeight: c.gameHeight
 			});
-			console.log('Total players: ' + user.length);
+			console.log('Total players: ' + users.length);
 		}
 	});
 	
@@ -94,23 +94,30 @@ io.on('connection', function(socket) {
 	});
 	
 	socket.on('respawn', function() {
-		if(users.findIndex(currentPlayer.id) > -1) {
-			users.splice(users.findIndex(currentPlayer.id), 1);
+		if(searchUsers(currentPlayer.id)) {
+			users.splice(searchUsers(currentPlayer.id), 1);
 		}
 		socket.emit('welcome', currentPlayer);
-		console.log('[INFO] Users ' + currentPlayer.name + ' respawned.');
+		console.log('[INFO] User ' + (currentPlayer.name == undefined ? '[Not yet named]' : currentPlayer.name)  + ' respawned.');
 	});
 	
 	socket.on('disconnect', function() {
-		if(users.findIndex(currentPlayer.id) > -1) {
-			users.splice(users.findIndex(currentPlayer.id), 1);
+		if(searchUsers(currentPlayer.id)) {
+			users.splice(searchUsers(currentPlayer.id), 1);
 		}
 		console.log('[INFO] User ' + currentPlayer.name + ' disconnected.');
 	});
 });
 
+function searchUsers(id) {
+	for(let i = 0; i < users.length; i++) {
+		if(users[i].id === id) return true;
+	}
+	return false;
+}
+
 function tickPlayer(currentPlayer) {
-	movePlayer(currentPlayer);
+	//movePlayer(currentPlayer);
 	
 	//more to add soon!
 }
@@ -231,6 +238,3 @@ if (process.env.OPENSHIFT_NODEJS_IP !== undefined) {
         console.log('Now listening on port ' + c.port);
     });
 }
-/*http.listen(c.port, function() {
-	console.log('Now listening on port ' + c.port);
-});*/
