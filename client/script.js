@@ -1,4 +1,3 @@
-//var io = require('socket.io-client');
 var global = {};
 var socket, reason;
 var player = {
@@ -150,8 +149,8 @@ function drawgrid() {
 }
 
 function resize() {
-	player.screenWidth = global.c.width = global.screenWidth = global.playerType == 'player' ? window.innerWidth : global.gameWidth;
-	player.screenHeight = global.c.height = global.screenHeight = global.playerType == 'player' ? window.innerHeight : global.gameHeight;
+	player.screenWidth = global.c.width = global.screenWidth ? window.innerWidth : global.gameWidth;
+	player.screenHeight = global.c.height = global.screenHeight ? window.innerHeight : global.gameHeight;
 	socket.emit('windowResized', { screenWidth: global.screenWidth, screenHeight: global.screenHeight });
 	//TEMP CODE
 	drawgrid();
