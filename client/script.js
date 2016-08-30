@@ -1,5 +1,12 @@
 var global = {};
 var socket, reason;
+var playerConfig = {
+    border: 6,
+    textColor: '#FFFFFF',
+    textBorder: '#000000',
+    textBorderSize: 3,
+    defaultSize: 30
+};
 var player = {
 	id: -1,
 	x: window.innerWidth / 2,
@@ -39,7 +46,7 @@ $('.ready').click(function(){
   drawgrid();
   //END TEMP CODE
   startGame(nick);
-  
+
   /*graph.fillStyle = '#00EE00';
   graph.fillRect(0, 0, window.innerWidth, window.innerHeight);
   drawgrid();
@@ -48,10 +55,10 @@ $('.ready').click(function(){
 
 function startGame(name) {
 	global.playerName = name.replace(/(<([^>]+)>)/ig, '').substring(0,25);
-	
+
 	global.screenWidth = window.innerWidth;
 	global.screenHeight = window.innerHeight;
-	
+
 	if(!socket) {
 		socket = io();
 		setUpSocket(socket);
@@ -66,12 +73,12 @@ function setUpSocket(socket) {
 		socket.close();
 		global.disconnected = true;
 	});
-	
+
 	socket.on('disconnect', function() {
 		socket.close();
 		global.disconnected = true;
 	});
-	
+
 	socket.on('welcome', function(playerSettings) {
 		player = playerSettings;
 		player.name = global.playerName;
@@ -83,20 +90,20 @@ function setUpSocket(socket) {
 		global.gameStart = true;
 		global.c.focus();
 	});
-	
+
 	socket.on('gameSetup', function(data) {
 		global.gameWidth = data.gameWidth;
 		global.gameHeight = data.gameHeight;
 		resize();
 	});
-	
+
 	socket.on('serverSayMove', function(resourceData, workerData, soldierData, tentData) {
 		var playerData;
 		for(var i = 0; i < tentData.length; i++) {
-			
+
 		}
 	});
-	
+
 	socket.on('kick', function(reason) {
 		alert('You were kicked from the game. reason: ' + reason);
 		socket.close();
@@ -112,7 +119,7 @@ function drawCircle(centerX, centerY, radius, sides, hue) {
     graph.lineWidth = 10;
     graph.strokeStyle = 'hsl(' + hue + ', 100%, 40%)';
     graph.fillStyle = 'hsl(' + hue + ', 100%, 50%)';
-    
+
     graph.beginPath();
 
     for (var i = 0; i < sides; i++) {

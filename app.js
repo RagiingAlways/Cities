@@ -18,11 +18,11 @@ var leaderboardUpdated = false;
 
 io.on('connection', function(socket) {
 	console.log('A user connected.');
-	
+
 	var radius = c.baseRadius;
 	var position = c.newPlayerInitPosition == 'random' ? {x: Math.round(Math.random() * c.gameWidth), y: Math.round(Math.random() * c.gameHeight)} : c.newPlayerInitPosition;
 	var hp = c.defaulthp, maxhp = c.defaulthp;
-	
+
 	var tents = [{
 		radius: c.baseRadius,
 		x: position.x,
@@ -30,9 +30,10 @@ io.on('connection', function(socket) {
 		hp: hp,
 		maxhp: maxhp,
 	}];
-	var points = 0;
-	var level = c.defaultLvl > 0 ? c.defaultLvl : 1;
-	
+
+	var level = c.defaultLvl > 0 && c.defaultLvl < 46 ? c.defaultLvl : 1;
+	var points = 0; //change this to an equation that issues the correct number if points based on level.
+
 	var currentPlayer = {
 		id: socket.id,
 		x: position.x,
@@ -45,10 +46,10 @@ io.on('connection', function(socket) {
 		hue: Math.round(Math.random() * 360),
 		target: {x: 0, y: 0}
 	};
-	
+
 	socket.on('gotit', function(player) {
 		console.log('[INFO] ' + player.name + ' connecting.');
-		
+
 		if(searchUsers(player.id)) {
 			console.log('[INFO] Player ID is already connected, kicking.');
             		socket.disconnect();
@@ -57,11 +58,11 @@ io.on('connection', function(socket) {
 			socket.disconnect();
 		} else {
 			sockets[player.id] = socket;
-			
+
 			var radius = c.baseRadius;
 			var position = c.newPlayerInitPosition == 'random' ? {x: Math.round(Math.random() * c.gameWidth), y: Math.round(Math.random() * c.gameHeight)} : c.newPlayerInitPosition;
 			var hp = c.defaulthp, maxhp = c.defaulthp;
-			
+
 			player.x = position.x;
 			player.y = position.y;
 			player.target.x = 0;
@@ -73,13 +74,13 @@ io.on('connection', function(socket) {
 				hp: hp,
 				maxhp: maxhp,
 			}];
-			
+
 			player.points = 0;
 			player.level = c.defaultLvl > 0 ? c.defaultLvl : 1;
 			player.hue = Math.round(Math.round() * 360);
 			currentPlayer = player;
 			users.push(currentPlayer);
-			
+
 			socket.emit('gameSetup', {
 				gameWidth: c.gameWidth,
 				gameHeight: c.gameHeight
@@ -87,12 +88,12 @@ io.on('connection', function(socket) {
 			console.log('Total players: ' + users.length);
 		}
 	});
-	
+
 	socket.on('windowResized', function (data) {
 		currentPlayer.screenWidth = data.screenWidth;
 		currentPlayer.screenHeight = data.screenHeight;
 	});
-	
+
 	socket.on('respawn', function() {
 		if(searchUsers(currentPlayer.id)) {
 			users.splice(searchUsers(currentPlayer.id), 1);
@@ -100,7 +101,7 @@ io.on('connection', function(socket) {
 		socket.emit('welcome', currentPlayer);
 		console.log('[INFO] User ' + (currentPlayer.name == undefined ? '[Not yet named]' : currentPlayer.name)  + ' respawned.');
 	});
-	
+
 	socket.on('disconnect', function() {
 		if(searchUsers(currentPlayer.id)) {
 			users.splice(searchUsers(currentPlayer.id), 1);
@@ -118,7 +119,7 @@ function searchUsers(id) {
 
 function tickPlayer(currentPlayer) {
 	//movePlayer(currentPlayer);
-	
+
 	//more to add soon!
 }
 
@@ -131,9 +132,9 @@ function moveloop() {
 function gameloop() {
 	if(users.length > 0) {
 		users.sort(function(a, b) { return b.points - a.points; });
-		
+
 		var topUsers = [];
-		
+
 		for(var i = 0; i < Math.min(10, users.length); i++) {
 			topUsers.push({
 				id: users[i].id,
@@ -165,7 +166,7 @@ function sendUpdates() {
 		//center view if x/y is undefined (for player who died)
 		u.x = u.x || c.gameWidth / 2;
 		u.y = u.y || c.gameWidth / 2;
-		
+
 		//find visible things
 		var visibleResources = resources.map(function(f) {
 			if(f.x > u.x - u.screenWidth/2 - f.radius &&
@@ -175,7 +176,7 @@ function sendUpdates() {
                     		return f;
 			}
 		}).filter(function(f) { return f; });
-		
+
 		var visibleWorkers = workers.map(function(f) {
 			if(f.x > u.x - u.screenWidth/2 - f.radius - 20 &&
 				f.x < u.x + u.screenWidth/2 + f.radius + 20 &&
@@ -184,7 +185,7 @@ function sendUpdates() {
                     		return f;
 			}
 		}).filter(function(f) { return f; });
-		
+
 		var visibleSoldiers = soldiers.map(function(f) {
 			if(f.x > u.x - u.screenWidth/2 - f.radius - 20 &&
 				f.x < u.x + u.screenWidth/2 + f.radius + 20 &&
@@ -193,7 +194,7 @@ function sendUpdates() {
                     		return f;
 			}
 		}).filter(function(f) { return f; });
-		
+
 		var visibleTents = users.map(function(f) {
 			for(var z = 0; z < f.tents.length; z++) {
 				if(f.tents[z].x + f.tents[z].radius > u.x - u.screenWidth/2 - 20 &&
@@ -209,7 +210,7 @@ function sendUpdates() {
 					}
 			}
 		}).filter(function(f) { return f; });
-		
+
 		sockets[u.id].emit('serverSayMove', visibleResources, visibleWorkers, visibleSoldiers, visibleTents);
 		if(leaderboardUpdated) {
 			sockets[u.id].emit('leaderboard', {
