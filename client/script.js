@@ -1,5 +1,3 @@
-var global = require('./global');
-var Canvas = require('./canvas');
 var socket, reason;
 var playerConfig = {
     border: 6,
