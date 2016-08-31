@@ -45,20 +45,6 @@ $('.ready').click(function(){
   global.c = document.getElementById('map');
   window.graph = global.c.getContext('2d');
   $('.main').html(global.c);
-	// $('.nickname', '.ready').css('display', 'none');
-  //TEMP CODE
-  drawgrid();
-  //END TEMP CODE
-  startGame(nick);
-
-  /*graph.fillStyle = '#00EE00';
-  graph.fillRect(0, 0, window.innerWidth, window.innerHeight);
-  drawgrid();
-  drawCircle((window.innerWidth / 2), (window.innerHeight / 2), 40, 5, 240);*/
-  //global.c = document.createElement('canvas');
-  //window.graph = global.c.getContext('2d');
-  //$(global.c).attr('id', 'map').attr('width', '1400').attr('height', '1000');
-  //$('.main').html(global.c);
   $('.main').css('margin', 0);
 
   startGame(nick);
@@ -114,7 +100,7 @@ function setUpSocket(socket) {
 		for(var i = 0; i < tentData.length; i++) {
       if(typeof(tentData[i].id) == "undefined") {
         playerData = tentData[i];
-        break;
+        i = tentData.length;
       }
 		}
     var xoffset = player.x - playerData.x;
@@ -236,6 +222,10 @@ function gameLoop() {
 }
 
 window.addEventListener('resize', resize);
+
+function valueInRange(min, max, value) {
+    return Math.min(max, Math.max(min, value));
+}
 
 function drawCircle(centerX, centerY, radius, sides, hue) {
     var theta = 0;
@@ -384,7 +374,4 @@ function resize() {
 	player.screenWidth = c.width = global.screenWidth ? window.innerWidth : global.gameWidth;
 	player.screenHeight = c.height = global.screenHeight ? window.innerHeight : global.gameHeight;
 	socket.emit('windowResized', { screenWidth: global.screenWidth, screenHeight: global.screenHeight });
-	//TEMP CODE
-	drawgrid();
-	//END TEMP CODE
 }
