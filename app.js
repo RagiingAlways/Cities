@@ -7,6 +7,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 var c = require('./config.json');
+var util = require('./util.js');
 
 var sockets = {};
 var users = [];
@@ -31,7 +32,7 @@ io.on('connection', function(socket) {
 		radius: c.baseRadius,
 		x: position.x,
 		y: position.y,
-		speed: c.defaultSpeed, //Default speed for now.
+		speed: c.baseSpeed, //Default speed for now.
 		hp: hp,
 		maxhp: maxhp,
 	}];
@@ -77,7 +78,7 @@ io.on('connection', function(socket) {
 				radius: c.baseRadius,
 				x: position.x,
 				y: position.y,
-				speed: c.defaultSpeed, //Default speed for now.
+				speed: c.baseSpeed, //Default speed for now.
 				hp: hp,
 				maxhp: maxhp,
 			}];
@@ -85,7 +86,7 @@ io.on('connection', function(socket) {
 			player.points = 0;
 			player.level = c.defaultLvl > 0 ? c.defaultLvl : 1;
 			player.stationary = false;
-			player.hue = Math.round(Math.round() * 360);
+			player.hue = Math.round(Math.random() * 360);
 			currentPlayer = player;
 			users.push(currentPlayer);
 
@@ -125,6 +126,7 @@ io.on('connection', function(socket) {
 });
 
 function movePlayer(player) {
+		//console.log(player.x);
     var x =0,y =0;
     for(var i=0; i<player.tents.length; i++) {
 			  if(player.stationary) return;
@@ -136,15 +138,15 @@ function movePlayer(player) {
         var deg = Math.atan2(target.y, target.x);
         var slowDown = 1;
         /*if(player.tents[i].speed <= 6.25) {
-            slowDown = util.log(player.tents[i].mass, c.slowBase) - initMassLog + 1; // ??? We will probably need our own set to calculate how kuch to slow down by
+            slowDown = util.log(player.tents[i].mass, c.slowBase) - initMassLog + 1;
         }*/
 
         var deltaY = player.tents[i].speed * Math.sin(deg) / slowDown;
         var deltaX = player.tents[i].speed * Math.cos(deg) / slowDown;
 
-        /*if(player.tents[i].speed > 6.25) { // We dont have a max yet, but will caclulate and implement when ready.
+        if(player.tents[i].speed > c.maxSpeed) { 
             player.tents[i].speed -= 0.5;
-        }*/
+        }
         if (dist < (50 + player.tents[i].radius)) {
             deltaY *= dist / (50 + player.tents[i].radius);
             deltaX *= dist / (50 + player.tents[i].radius);
@@ -156,12 +158,12 @@ function movePlayer(player) {
             player.tents[i].x += deltaX;
         }
         // Find best solution.
-        /*for(var j=0; j<player.tents.length; j++) {
+        for(var j=0; j<player.tents.length; j++) {
             if(j != i && player.tents[i] !== undefined) {
                 var distance = Math.sqrt(Math.pow(player.tents[j].y-player.tents[i].y,2) + Math.pow(player.tents[j].x-player.tents[i].x,2));
                 var radiusTotal = (player.tents[i].radius + player.tents[j].radius);
                 if(distance < radiusTotal) {
-                    if(player.lastSplit > new Date().getTime() - 1000 * c.mergeTimer) {
+                    //if(player.lastSplit > new Date().getTime() - 1000 * c.mergeTimer) { //Not merging.
                         if(player.tents[i].x < player.tents[j].x) {
                             player.tents[i].x--;
                         } else if(player.tents[i].x > player.tents[j].x) {
@@ -172,16 +174,15 @@ function movePlayer(player) {
                         } else if((player.tents[i].y > player.tents[j].y)) {
                             player.tents[i].y++;
                         }
-                    }
-                    else if(distance < radiusTotal / 1.75) {
+                    //}
+                    /*else if(distance < radiusTotal / 1.75) { //Merge into one.
                         player.tents[i].mass += player.tents[j].mass;
                         player.tents[i].radius = util.massToRadius(player.tents[i].mass);
                         player.tents.splice(j, 1);
-                    }
+                    }*/
                 }
             }
-        }*/
-				// ???, test this
+        }
         if(player.tents.length > i) {
             var borderCalc = player.tents[i].radius / 3;
             if (player.tents[i].x > c.gameWidth - borderCalc) {
@@ -200,7 +201,6 @@ function movePlayer(player) {
             y += player.tents[i].y;
         }
     }
-		//and this
     player.x = x/player.tents.length;
     player.y = y/player.tents.length;
 }
@@ -305,7 +305,6 @@ function sendUpdates() {
 					}
 			}
 		}).filter(function(f) { return f; });
-
 		sockets[u.id].emit('serverSayMove', visibleResources, visibleWorkers, visibleSoldiers, visibleTents);
 		if(leaderboardUpdated) {
 			sockets[u.id].emit('leaderboard', {

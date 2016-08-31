@@ -96,25 +96,27 @@ function setUpSocket(socket) {
 	});
 
 	socket.on('serverSayMove', function(resourceData, workerData, soldierData, tentData) {
-		var playerData;
+		var playerData = null;
 		for(var i = 0; i < tentData.length; i++) {
       if(typeof(tentData[i].id) == "undefined") {
         playerData = tentData[i];
         i = tentData.length;
       }
 		}
-    var xoffset = player.x - playerData.x;
-    var yoffset = player.y - playerData.y;
+    if(playerData !== null) { //To prevent an error where the server has not yet logged the user to its users array.
+      var xoffset = player.x - playerData.x;
+      var yoffset = player.y - playerData.y;
 
-    player.x = playerData.x;
-    player.y = playerData.y;
-    player.hue = playerData.hue;
-    player.tents = playerData.tents;
-    player.hp = playerData.hp;
-    player.maxhp = playerData.maxhp;
-    player.stationary = playerData.stationary;
-    player.xoffset = isNaN(xoffset) ? 0 : xoffset;
-    player.yoffset = isNaN(yoffset) ? 0 : yoffset;
+      player.x = playerData.x;
+      player.y = playerData.y;
+      player.hue = playerData.hue;
+      player.tents = playerData.tents;
+      player.hp = playerData.hp;
+      player.maxhp = playerData.maxhp;
+      player.stationary = playerData.stationary;
+      player.xoffset = isNaN(xoffset) ? 0 : xoffset;
+      player.yoffset = isNaN(yoffset) ? 0 : yoffset;
+    }
 
     users = tentData;
     workers = workerData;
