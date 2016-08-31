@@ -6,5 +6,6 @@
 	"newPlayerInitPosition": "random",
 	"defaultLvl": 1,
 	"defaulthp": 50,
-	"networkUpdateFactor": 40
+	"networkUpdateFactor": 40,
+	"baseSpeed": 5
 }

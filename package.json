@@ -4,8 +4,8 @@
 	"version": "0.0.1",
 	"dependencies": {
 		"socket.io": "^1.4.8",
-		"socket.io-client": "^1.4.8",
-		"express": "^4.14.0"
+		"express": "^4.14.0",
+		"sat": "^0.5.0"
 	},
 	"repository": {
 		"type": "git",

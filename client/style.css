@@ -64,4 +64,6 @@ h1{
     /*transform: translateY(-201px) translateX(1000px) rotateZ(45deg);
     transform-origin: 0 0;
     overflow: hidden;*/
+    opacity: 0;
+    transition: opacity 1s ease;
 }
