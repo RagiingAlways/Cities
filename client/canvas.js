@@ -1,5 +1,3 @@
-var global = require('./global');
-
 class Canvas {
     constructor(params) {
         this.directionLock = false;
@@ -150,5 +148,3 @@ class Canvas {
         }
     }
 }
-
-module.exports = Canvas;
