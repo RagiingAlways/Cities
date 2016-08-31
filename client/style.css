@@ -58,7 +58,10 @@ h1{
   outline: none;
 }
 
-#map{
-  /*border: 5px solid #000;*/
-  /*background-image: url('images/map.png');*/
+#map {
+    /* border: 5px solid #000; */
+    /* background-image: url('images/map.png'); */
+    /*transform: translateY(-201px) translateX(1000px) rotateZ(45deg);
+    transform-origin: 0 0;
+    overflow: hidden;*/
 }

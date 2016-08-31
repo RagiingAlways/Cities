@@ -31,16 +31,14 @@ $('.ready').click(function(){
     nick = 'An unnamed city.';
   }
 
-  global.c = document.createElement('canvas');
+  global.c = document.getElementById('map');
   window.graph = global.c.getContext('2d');
-  $(global.c).attr('id', 'map').attr('width', '1400').attr('height', '1000');
   $('.main').html(global.c);
-  $('.main').css('margin', 0);
   //TEMP CODE
   drawgrid();
   //END TEMP CODE
   startGame(nick);
-  
+
   /*graph.fillStyle = '#00EE00';
   graph.fillRect(0, 0, window.innerWidth, window.innerHeight);
   drawgrid();
@@ -49,10 +47,10 @@ $('.ready').click(function(){
 
 function startGame(name) {
 	global.playerName = name.replace(/(<([^>]+)>)/ig, '').substring(0,25);
-	
+
 	global.screenWidth = window.innerWidth;
 	global.screenHeight = window.innerHeight;
-	
+
 	if(!socket) {
 		socket = io();
 		setUpSocket(socket);
@@ -67,12 +65,12 @@ function setUpSocket(socket) {
 		socket.close();
 		global.disconnected = true;
 	});
-	
+
 	socket.on('disconnect', function() {
 		socket.close();
 		global.disconnected = true;
 	});
-	
+
 	socket.on('welcome', function(playerSettings) {
 		player = playerSettings;
 		player.name = global.playerName;
@@ -84,20 +82,20 @@ function setUpSocket(socket) {
 		global.gameStart = true;
 		global.c.focus();
 	});
-	
+
 	socket.on('gameSetup', function(data) {
 		global.gameWidth = data.gameWidth;
 		global.gameHeight = data.gameHeight;
 		resize();
 	});
-	
+
 	socket.on('serverSayMove', function(resourceData, workerData, soldierData, tentData) {
 		var playerData;
 		for(var i = 0; i < tentData.length; i++) {
-			
+
 		}
 	});
-	
+
 	socket.on('kick', function(reason) {
 		alert('You were kicked from the game. reason: ' + reason);
 		socket.close();
@@ -113,7 +111,7 @@ function drawCircle(centerX, centerY, radius, sides, hue) {
     graph.lineWidth = 10;
     graph.strokeStyle = 'hsl(' + hue + ', 100%, 40%)';
     graph.fillStyle = 'hsl(' + hue + ', 100%, 50%)';
-    
+
     graph.beginPath();
 
     for (var i = 0; i < sides; i++) {
@@ -122,7 +120,6 @@ function drawCircle(centerX, centerY, radius, sides, hue) {
         y = centerY + radius * Math.cos(theta);
         graph.lineTo(x, y);
     }
-
     graph.closePath();
     graph.stroke();
     graph.fill();
@@ -144,7 +141,7 @@ function drawgrid() {
         graph.moveTo(0, y);
         graph.lineTo(window.innerWidth, y);
     }
-
+		// graph.rotate(20*Math.PI/180);
     graph.stroke();
     graph.globalAlpha = 1;
 }
