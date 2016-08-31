@@ -45,6 +45,7 @@ $('.ready').click(function(){
   global.c = document.getElementById('map');
   window.graph = global.c.getContext('2d');
   $('.main').html(global.c);
+	// $('.nickname', '.ready').css('display', 'none');
   //TEMP CODE
   drawgrid();
   //END TEMP CODE
