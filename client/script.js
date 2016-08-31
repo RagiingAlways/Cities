@@ -74,7 +74,7 @@ function startGame(name) {
 		socket = io();
 		setUpSocket(socket);
 	}
-	if(!global.animLoopHandle) animLoop();
+	if(!global.animLoopHandle) animloop();
 	socket.emit('respawn');
   window.canvas.socket = socket;
 	global.socket = socket;
@@ -190,7 +190,7 @@ function gameLoop() {
             var orderTents = [];
             for(var i=0; i<users.length; i++) {
                 for(var j=0; j<users[i].tents.length; j++) {
-                    orderMass.push({
+                    orderTents.push({
                         nTent: i,
                         nDiv: j,
                         hp: users[i].tents[j].hp
