@@ -1,6 +1,7 @@
 ﻿'use strict';
 
 var express = require('express');
+var SAT = require('sat');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
@@ -16,6 +17,9 @@ var soldiers = [];
 var leaderboard = [];
 var leaderboardUpdated = false;
 
+var V = SAT.Vector;
+var C = SAT.Circle;
+
 io.on('connection', function(socket) {
 	console.log('A user connected.');
 
@@ -27,6 +31,7 @@ io.on('connection', function(socket) {
 		radius: c.baseRadius,
 		x: position.x,
 		y: position.y,
+		speed: c.defaultSpeed, //Default speed for now.
 		hp: hp,
 		maxhp: maxhp,
 	}];
@@ -43,6 +48,7 @@ io.on('connection', function(socket) {
 		level: level,
 		maxhp: maxhp,
 		hp: hp,
+		stationary: false,
 		hue: Math.round(Math.random() * 360),
 		target: {x: 0, y: 0}
 	};
@@ -71,12 +77,14 @@ io.on('connection', function(socket) {
 				radius: c.baseRadius,
 				x: position.x,
 				y: position.y,
+				speed: c.defaultSpeed, //Default speed for now.
 				hp: hp,
 				maxhp: maxhp,
 			}];
 
 			player.points = 0;
 			player.level = c.defaultLvl > 0 ? c.defaultLvl : 1;
+			player.stationary = false;
 			player.hue = Math.round(Math.round() * 360);
 			currentPlayer = player;
 			users.push(currentPlayer);
@@ -108,7 +116,94 @@ io.on('connection', function(socket) {
 		}
 		console.log('[INFO] User ' + currentPlayer.name + ' disconnected.');
 	});
+
+	socket.on('0', function(target) {
+		if(target.x !== currentPlayer.x || target.y !== currentPlayer.y) {
+			currentPlayer.target = target;
+		}
+	});
 });
+
+function movePlayer(player) {
+    var x =0,y =0;
+    for(var i=0; i<player.tents.length; i++) {
+			  if(player.stationary) return;
+        var target = {
+            x: player.x - player.tents[i].x + player.target.x,
+            y: player.y - player.tents[i].y + player.target.y
+        };
+        var dist = Math.sqrt(Math.pow(target.y, 2) + Math.pow(target.x, 2));
+        var deg = Math.atan2(target.y, target.x);
+        var slowDown = 1;
+        /*if(player.tents[i].speed <= 6.25) {
+            slowDown = util.log(player.tents[i].mass, c.slowBase) - initMassLog + 1; // ??? We will probably need our own set to calculate how kuch to slow down by
+        }*/
+
+        var deltaY = player.tents[i].speed * Math.sin(deg) / slowDown;
+        var deltaX = player.tents[i].speed * Math.cos(deg) / slowDown;
+
+        /*if(player.tents[i].speed > 6.25) { // We dont have a max yet, but will caclulate and implement when ready.
+            player.tents[i].speed -= 0.5;
+        }*/
+        if (dist < (50 + player.tents[i].radius)) {
+            deltaY *= dist / (50 + player.tents[i].radius);
+            deltaX *= dist / (50 + player.tents[i].radius);
+        }
+        if (!isNaN(deltaY)) {
+            player.tents[i].y += deltaY;
+        }
+        if (!isNaN(deltaX)) {
+            player.tents[i].x += deltaX;
+        }
+        // Find best solution.
+        /*for(var j=0; j<player.tents.length; j++) {
+            if(j != i && player.tents[i] !== undefined) {
+                var distance = Math.sqrt(Math.pow(player.tents[j].y-player.tents[i].y,2) + Math.pow(player.tents[j].x-player.tents[i].x,2));
+                var radiusTotal = (player.tents[i].radius + player.tents[j].radius);
+                if(distance < radiusTotal) {
+                    if(player.lastSplit > new Date().getTime() - 1000 * c.mergeTimer) {
+                        if(player.tents[i].x < player.tents[j].x) {
+                            player.tents[i].x--;
+                        } else if(player.tents[i].x > player.tents[j].x) {
+                            player.tents[i].x++;
+                        }
+                        if(player.tents[i].y < player.tents[j].y) {
+                            player.tents[i].y--;
+                        } else if((player.tents[i].y > player.tents[j].y)) {
+                            player.tents[i].y++;
+                        }
+                    }
+                    else if(distance < radiusTotal / 1.75) {
+                        player.tents[i].mass += player.tents[j].mass;
+                        player.tents[i].radius = util.massToRadius(player.tents[i].mass);
+                        player.tents.splice(j, 1);
+                    }
+                }
+            }
+        }*/
+				// ???, test this
+        if(player.tents.length > i) {
+            var borderCalc = player.tents[i].radius / 3;
+            if (player.tents[i].x > c.gameWidth - borderCalc) {
+                player.tents[i].x = c.gameWidth - borderCalc;
+            }
+            if (player.tents[i].y > c.gameHeight - borderCalc) {
+                player.tents[i].y = c.gameHeight - borderCalc;
+            }
+            if (player.tents[i].x < borderCalc) {
+                player.tents[i].x = borderCalc;
+            }
+            if (player.tents[i].y < borderCalc) {
+                player.tents[i].y = borderCalc;
+            }
+            x += player.tents[i].x;
+            y += player.tents[i].y;
+        }
+    }
+		//and this
+    player.x = x/player.tents.length;
+    player.y = y/player.tents.length;
+}
 
 function searchUsers(id) {
 	for(let i = 0; i < users.length; i++) {
@@ -118,7 +213,7 @@ function searchUsers(id) {
 }
 
 function tickPlayer(currentPlayer) {
-	//movePlayer(currentPlayer);
+	movePlayer(currentPlayer);
 
 	//more to add soon!
 }
@@ -203,9 +298,9 @@ function sendUpdates() {
 					f.tents[z].y - f.tents[z].radius < u.y + u.screenHeight/2 + 20) {
 						z = f.tents.length;
 						if(f.id !== u.id) {
-							return {id: f.id, x: f.x, y: f.y, tents: f.tents, hue: f.hue, name: f.name};
+							return {id: f.id, x: f.x, y: f.y, tents: f.tents, hue: f.hue, name: f.name, hp: f.hp, maxhp: f.maxhp, stationary: f.stationary};
 						} else {
-							return {x: f.x, y: f.y, tents: f.tents, hue: f.hue};
+							return {x: f.x, y: f.y, tents: f.tents, hue: f.hue, hp: f.hp, maxhp: f.maxhp, stationary: f.stationary};
 						}
 					}
 			}
