@@ -2,11 +2,11 @@
 	"port": 3000,
 	"gameWidth": 5000,
 	"gameHeight": 5000,
-	"baseRadius": 30,
+	"baseRadius": 40,
 	"newPlayerInitPosition": "random",
 	"defaultLvl": 1,
 	"defaulthp": 50,
 	"networkUpdateFactor": 40,
-	"baseSpeed": 6,
+	"baseSpeed": 5,
 	"maxSpeed": 12
 }

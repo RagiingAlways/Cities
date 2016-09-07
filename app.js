@@ -144,7 +144,7 @@ function movePlayer(player) {
         var deltaY = player.tents[i].speed * Math.sin(deg) / slowDown;
         var deltaX = player.tents[i].speed * Math.cos(deg) / slowDown;
 
-        if(player.tents[i].speed > c.maxSpeed) { 
+        if(player.tents[i].speed > c.maxSpeed) {
             player.tents[i].speed -= 0.5;
         }
         if (dist < (50 + player.tents[i].radius)) {
@@ -207,7 +207,7 @@ function movePlayer(player) {
 
 function searchUsers(id) {
 	for(let i = 0; i < users.length; i++) {
-		if(users[i].id === id) return true;
+		if(users[i].id === id) return i;
 	}
 	return false;
 }

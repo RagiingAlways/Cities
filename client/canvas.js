@@ -10,8 +10,8 @@ class Canvas {
         this.cv = document.getElementById('map');
         this.cv.width = global.screenWidth;
         this.cv.height = global.screenHeight;
-        this.cv.addEventListener('mousemove', this.gameInput, false);
-        this.cv.addEventListener('mouseout', this.outOfBounds, false);
+        //this.cv.addEventListener('mousemove', this.gameInput, false);
+        //this.cv.addEventListener('mouseout', this.outOfBounds, false);
         this.cv.addEventListener('keypress', this.keyInput, false);
         this.cv.addEventListener('keyup', function(event) {
             self.reenviar = true;
@@ -80,12 +80,12 @@ class Canvas {
     	var directionVertical = 0;
     	for (var i = 0, len = list.length; i < len; i++) {
     		if (directionHorizontal === 0) {
-    			if (list[i] == global.KEY_LEFT) directionHorizontal -= Number.MAX_VALUE;
-    			else if (list[i] == global.KEY_RIGHT) directionHorizontal += Number.MAX_VALUE;
+    			if (list[i] == global.KEY_LEFT || list[i] == global.KEY_LEFT_ALT) directionHorizontal -= Number.MAX_VALUE;
+    			else if (list[i] == global.KEY_RIGHT || list[i] == global.KEY_RIGHT_ALT) directionHorizontal += Number.MAX_VALUE;
     		}
     		if (directionVertical === 0) {
-    			if (list[i] == global.KEY_UP) directionVertical -= Number.MAX_VALUE;
-    			else if (list[i] == global.KEY_DOWN) directionVertical += Number.MAX_VALUE;
+    			if (list[i] == global.KEY_UP || list[i] == global.KEY_UP_ALT) directionVertical -= Number.MAX_VALUE;
+    			else if (list[i] == global.KEY_DOWN || list[i] == global.KEY_DOWN_ALT) directionVertical += Number.MAX_VALUE;
     		}
     	}
     	this.target.x += directionHorizontal;
@@ -98,11 +98,11 @@ class Canvas {
     }
 
     horizontal(key) {
-    	return key == global.KEY_LEFT || key == global.KEY_RIGHT;
+    	return (key == global.KEY_LEFT || key == global.KEY_LEFT_ALT) || (key == global.KEY_RIGHT || key == global.KEY_RIGHT_ALT);
     }
 
     vertical(key) {
-    	return key == global.KEY_DOWN || key == global.KEY_UP;
+    	return (key == global.KEY_DOWN || key == global.KEY_DOWN_ALT) || (key == global.KEY_UP || key == global.KEY_UP_ALT);
     }
 
     // Register when the mouse goes off the canvas.
@@ -132,8 +132,8 @@ class Canvas {
     }
 
     // Chat command callback functions.
-    keyInput(event) {
-    	var key = event.which || event.keyCode;
+    keyInput(event) { //Do not run right now
+    	/*var key = event.which || event.keyCode;
     	if (key === global.KEY_FIREFOOD && this.parent.reenviar) {
             this.parent.socket.emit('1');
             this.parent.reenviar = false;
@@ -145,6 +145,6 @@ class Canvas {
         }
         else if (key === global.KEY_CHAT) {
             document.getElementById('chatInput').focus();
-        }
+        }*/
     }
 }

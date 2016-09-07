@@ -21,7 +21,8 @@ var workers = [];
 var soldiers = [];
 var users = [];
 var leaderboard = [];
-var target = {x: player.x, y: player.y};
+//var target = {x: player.x, y: player.y};
+var target = {x: 0, y: 0};
 global.target = target;
 
 window.canvas = new Canvas();
@@ -43,7 +44,7 @@ $('.ready').click(function(){
   }
 
   global.c = document.getElementById('map');
-  window.graph = global.c.getContext('2d');
+  graph = global.c.getContext('2d');
   $('.main').html(global.c);
   $('.main').css('margin', 0);
 
@@ -233,7 +234,7 @@ function drawCircle(centerX, centerY, radius, sides, hue) {
     var theta = 0;
     var x = 0;
     var y = 0;
-    let graph = window.graph;
+    let graph = graph;
     graph.lineWidth = 10;
     graph.strokeStyle = 'hsl(' + hue + ', 100%, 40%)';
     graph.fillStyle = 'hsl(' + hue + ', 100%, 50%)';
@@ -252,7 +253,6 @@ function drawCircle(centerX, centerY, radius, sides, hue) {
 }
 
 function drawgrid() {
-    let graph = window.graph;
     graph.lineWidth = 1;
     graph.strokeStyle = 130;
     graph.globalAlpha = 0.15;
@@ -286,7 +286,7 @@ function drawPlayers(order) {
         var x=0;
         var y=0;
 
-        var points = 30 + ~~(tentCurrent.mass/5);
+        var points = 6; //30 + ~~(tentCurrent.mass/5);
         var increase = Math.PI * 2 / points;
 
         graph.strokeStyle = 'hsl(' + userCurrent.hue + ', 100%, 45%)';
