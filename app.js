@@ -112,7 +112,7 @@ io.on('connection', function(socket) {
 	});
 
 	socket.on('disconnect', function() {
-		if(searchUsers(currentPlayer.id)) {
+		if(searchUsers(currentPlayer.id) > -1) {
 			users.splice(searchUsers(currentPlayer.id), 1);
 		}
 		console.log('[INFO] User ' + currentPlayer.name + ' disconnected.');
@@ -209,7 +209,7 @@ function searchUsers(id) {
 	for(let i = 0; i < users.length; i++) {
 		if(users[i].id === id) return i;
 	}
-	return false;
+	return -1;
 }
 
 function tickPlayer(currentPlayer) {
