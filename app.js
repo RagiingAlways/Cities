@@ -57,7 +57,7 @@ io.on('connection', function(socket) {
 	socket.on('gotit', function(player) {
 		console.log('[INFO] ' + player.name + ' connecting.');
 
-		if(searchUsers(player.id)) {
+		if(searchUsers(player.id) > -1) {
 			console.log('[INFO] Player ID is already connected, kicking.');
             		socket.disconnect();
 		} else if(!validNick(player.name)) {
@@ -104,7 +104,7 @@ io.on('connection', function(socket) {
 	});
 
 	socket.on('respawn', function() {
-		if(searchUsers(currentPlayer.id)) {
+		if(searchUsers(currentPlayer.id) > -1) {
 			users.splice(searchUsers(currentPlayer.id), 1);
 		}
 		socket.emit('welcome', currentPlayer);
