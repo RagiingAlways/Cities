@@ -272,7 +272,7 @@ function drawgrid() {
     graph.globalAlpha = 1;
 }
 
-function drawPlayers(order) {
+function drawPlayers(order) { //handles player animation
     var start = {
         x: player.x - (global.screenWidth / 2),
         y: player.y - (global.screenHeight / 2)
@@ -289,7 +289,7 @@ function drawPlayers(order) {
         var points = 6; //30 + ~~(tentCurrent.mass/5);
         var increase = Math.PI * 2 / points;
 
-        graph.strokeStyle = 'hsl(' + userCurrent.hue + ', 100%, 45%)';
+        graph.strokeStyle = player.stationary ? '#000' : 'hsl(' + userCurrent.hue + ', 100%, 45%)';
         graph.fillStyle = 'hsl(' + userCurrent.hue + ', 100%, 50%)';
         graph.lineWidth = playerConfig.border;
 
@@ -307,12 +307,12 @@ function drawPlayers(order) {
 
             x = tentCurrent.radius * Math.cos(global.spin) + circle.x;
             y = tentCurrent.radius * Math.sin(global.spin) + circle.y;
-            if(typeof(userCurrent.id) == "undefined") {
+            if(typeof(userCurrent.id) == "undefined") { //not own tent
                 x = valueInRange(-userCurrent.x + global.screenWidth / 2,
                                  global.gameWidth - userCurrent.x + global.screenWidth / 2, x);
                 y = valueInRange(-userCurrent.y + global.screenHeight / 2,
                                  global.gameHeight - userCurrent.y + global.screenHeight / 2, y);
-            } else {
+            } else { //own tent
                 x = valueInRange(-tentCurrent.x - player.x + global.screenWidth / 2 + (tentCurrent.radius/3),
                                  global.gameWidth - tentCurrent.x + global.gameWidth - player.x + global.screenWidth / 2 - (tentCurrent.radius/3), x);
                 y = valueInRange(-tentCurrent.y - player.y + global.screenHeight / 2 + (tentCurrent.radius/3),
