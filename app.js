@@ -32,7 +32,6 @@ io.on('connection', function(socket) {
 		radius: c.baseRadius,
 		x: position.x,
 		y: position.y,
-		speed: c.baseSpeed, //Default speed for now.
 		hp: hp,
 		maxhp: maxhp,
 	}];
@@ -44,6 +43,8 @@ io.on('connection', function(socket) {
 		id: socket.id,
 		x: position.x,
 		y: position.y,
+		velo: {x: 0, y: 0},
+		speed: c.baseSpeed,
 		tents: tents,
 		points: points,
 		level: level,
@@ -74,11 +75,13 @@ io.on('connection', function(socket) {
 			player.y = position.y;
 			player.target.x = 0;
 			player.target.y = 0;
+			player.velo.x = 0;
+			player.velo.y = 0;
+			player.speed = c.baseSpeed;
 			var tents = [{
 				radius: c.baseRadius,
 				x: position.x,
 				y: position.y,
-				speed: c.baseSpeed, //Default speed for now.
 				hp: hp,
 				maxhp: maxhp,
 			}];
@@ -118,15 +121,17 @@ io.on('connection', function(socket) {
 		console.log('[INFO] User ' + currentPlayer.name + ' disconnected.');
 	});
 
-	socket.on('0', function(target) {
+	socket.on('0', function(target, velo) {
 		if(target.x !== currentPlayer.x || target.y !== currentPlayer.y) {
 			currentPlayer.target = target;
+		}
+		if(velo.x !== currentPlayer.velo.x || velo.y !== currentPlayer.velo.y) {
+			currentPlayer.velo = velo;
 		}
 	});
 });
 
 function movePlayer(player) {
-		//console.log(player.x);
     var x =0,y =0;
     for(var i=0; i<player.tents.length; i++) {
 			  if(player.stationary) return;
@@ -141,11 +146,11 @@ function movePlayer(player) {
             slowDown = util.log(player.tents[i].mass, c.slowBase) - initMassLog + 1;
         }*/
 
-        var deltaY = player.tents[i].speed * Math.sin(deg) / slowDown;
-        var deltaX = player.tents[i].speed * Math.cos(deg) / slowDown;
+        var deltaY = player.speed * Math.sin(deg) / slowDown;
+        var deltaX = player.speed * Math.cos(deg) / slowDown;
 
-        if(player.tents[i].speed > c.maxSpeed) {
-            player.tents[i].speed -= 0.5;
+        if(player.speed > c.maxSpeed) {
+            player.speed -= 0.5;
         }
         if (dist < (50 + player.tents[i].radius)) {
             deltaY *= dist / (50 + player.tents[i].radius);

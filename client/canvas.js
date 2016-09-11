@@ -2,6 +2,7 @@ class Canvas {
     constructor(params) {
         this.directionLock = false;
         this.target = global.target;
+        this.velo = global.velo;
         this.reenviar = true;
         this.socket = global.socket;
         this.directions = [];
@@ -30,10 +31,11 @@ class Canvas {
         var self = this.parent; // have to do this so we are not using the cv object
     	if (self.directional(key)) {
     		self.directionLock = true;
-    		if (self.newDirection(key, self.directions, true)) {
+    		//if (self.newDirection(key, self.directions, true)) {
+        self.newDirection(key, self.directions, true)
     			self.updateTarget(self.directions);
-    			self.socket.emit('0', self.target);
-    		}
+    			self.socket.emit('0', self.target, self.velo);
+    		//}
     	}
     }
 
@@ -41,11 +43,12 @@ class Canvas {
     directionUp(event) {
     	var key = event.which || event.keyCode;
     	if (this.directional(key)) { // this == the actual class
-    		if (this.newDirection(key, this.directions, false)) {
+    		//if (this.newDirection(key, this.directions, false)) {
+        this.newDirection(key, this.directions, false)
     			this.updateTarget(this.directions);
     			if (this.directions.length === 0) this.directionLock = false;
-    			this.socket.emit('0', this.target);
-    		}
+    			this.socket.emit('0', this.target, this.velo);
+    		//}
     	}
     }
 
@@ -75,22 +78,29 @@ class Canvas {
 
     // Updates the target according to the directions in the directions array.
     updateTarget(list) {
-    	this.target = { x : 0, y: 0 };
-    	var directionHorizontal = 0;
-    	var directionVertical = 0;
-    	for (var i = 0, len = list.length; i < len; i++) {
-    		if (directionHorizontal === 0) {
-    			if (list[i] == global.KEY_LEFT || list[i] == global.KEY_LEFT_ALT) directionHorizontal -= Number.MAX_VALUE;
-    			else if (list[i] == global.KEY_RIGHT || list[i] == global.KEY_RIGHT_ALT) directionHorizontal += Number.MAX_VALUE;
-    		}
-    		if (directionVertical === 0) {
-    			if (list[i] == global.KEY_UP || list[i] == global.KEY_UP_ALT) directionVertical -= Number.MAX_VALUE;
-    			else if (list[i] == global.KEY_DOWN || list[i] == global.KEY_DOWN_ALT) directionVertical += Number.MAX_VALUE;
-    		}
-    	}
-    	this.target.x += directionHorizontal;
-    	this.target.y += directionVertical;
-        global.target = this.target;
+      this.target = { x : 0, y: 0 };
+      for (var i = 0, len = list.length; i < len; i++) {
+    	  if (list[i] == global.KEY_LEFT || list[i] == global.KEY_LEFT_ALT) {
+	        if(this.velo.x > -global.player.speed) this.velo.x--;
+        }
+        if (list[i] == global.KEY_RIGHT || list[i] == global.KEY_RIGHT_ALT) {
+          if(this.velo.x < global.player.speed) this.velo.x++;
+        }
+        if (list[i] == global.KEY_UP || list[i] == global.KEY_UP_ALT) {
+          if(this.velo.y > -global.player.speed) this.velo.y--;
+        }
+        if (list[i] == global.KEY_DOWN || list[i] == global.KEY_DOWN_ALT) {
+          if(this.velo.y < global.player.speed) this.velo.y++;
+        }
+      }
+      //Apply friction
+      this.velo.y *= global.friction;
+      this.velo.x *= global.friction;
+      //Update
+      this.target.x += this.velo.x;
+      this.target.y += this.velo.y;
+      global.target = this.target;
+      global.velo = this.velo;
     }
 
     directional(key) {

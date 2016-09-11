@@ -7,6 +7,6 @@
 	"defaultLvl": 1,
 	"defaulthp": 50,
 	"networkUpdateFactor": 40,
-	"baseSpeed": 5,
-	"maxSpeed": 12
+	"baseSpeed": 20,
+	"maxSpeed": 30
 }

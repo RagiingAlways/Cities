@@ -24,6 +24,8 @@ var leaderboard = [];
 //var target = {x: player.x, y: player.y};
 var target = {x: 0, y: 0};
 global.target = target;
+var velo = {x: 0, y: 0};
+global.velo = velo;
 
 window.canvas = new Canvas();
 var c = window.canvas.cv;
@@ -84,6 +86,7 @@ function setUpSocket(socket) {
 		player.screenWidth = global.screenWidth;
 		player.screenHeight = global.screenHeight;
 		player.target = window.canvas.target;
+    player.velo = window.canvas.velo;
 		global.player = player;
 		socket.emit('gotit', player);
 		global.gameStart = true;
@@ -150,6 +153,11 @@ window.cancelAnimFrame = (function(handle) {
 function animloop() {
     global.animLoopHandle = window.requestAnimFrame(animloop);
     gameLoop();
+    veloLoop(); //handles velocity for non pressed directions (force them to go down)
+}
+
+function veloLoop() {
+    window.canvas.updateTarget(window.canvas.directions);
 }
 
 function gameLoop() {
@@ -191,7 +199,7 @@ function gameLoop() {
             });
 
             drawPlayers(orderTents);
-            socket.emit('0', window.canvas.target); // playerSendTarget "Heartbeat".
+            socket.emit('0', window.canvas.target, window.canvas.velo);
 
         } else {
             graph.fillStyle = '#333333';
