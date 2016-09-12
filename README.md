@@ -1,9 +1,9 @@
 # Cities
 
-[![GitHub Stars](https://img.shields.io/github/forks/hoeencoder/cities.svg)](https://github.com/hoeencoder/cities/members)
+[![GitHub Forks](https://img.shields.io/github/forks/hoeencoder/cities.svg)](https://github.com/HoeenCoder/Cities/network/members)
 [![Github Issues](https://img.shields.io/github/issues/hoeencoder/cities.svg)](https://github.com/hoeencoder/cities/issues)
 [![GitHub Wiki](https://img.shields.io/badge/Project-Wiki-lightgrey.svg)](https://github.com/hoeencoder/cities/wiki/Home)
-[![Dev Chat](https://img.shields.io/badge/Development-join_chat-brightgreen.svg)](https://spacialgaze.psim.us/cities)
+[![Dev Chat](https://img.shields.io/badge/Development-join_chat-brightgreen.svg)](http://spacialgaze.psim.us/cities)
 [![License](https://img.shields.io/badge/license-none-red.svg)](https://github.com/HoeenCoder/Cities/blob/master/LICENSE)
 
 Cities is a simple game where the goal is to build up your city of tents and become the best.
