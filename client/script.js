@@ -175,15 +175,16 @@ function gameLoop() {
             graph.fillStyle = global.backgroundColor;
             graph.fillRect(0, 0, global.screenWidth, global.screenHeight);
 
-            diamondgrid(25, 25, 1370, 979);
+            drawgrid();
+            //diamondgrid(25, 25, 1370, 979);
             //Not ready for these yet.
             //resources.forEach(drawResources);
             //soldiers.forEach(drawSoldiers);
             //workers.forEach(drawWorkers);
 
-            if (global.borderDraw) {
+            //if (global.borderDraw) {
                 drawborder();
-            }
+            //}
             var orderTents = [];
             for(var i=0; i<users.length; i++) {
                 for(var j=0; j<users[i].tents.length; j++) {
