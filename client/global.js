@@ -13,7 +13,7 @@ var global = {
     KEY_RIGHT_ALT: 68,
     KEY_DOWN: 40,
     KEY_DOWN_ALT: 83,
-    borderDraw: false,
+    borderDraw: true,
     spin: -Math.PI,
     enemySpin: -Math.PI,
     mobile: false,
@@ -22,7 +22,7 @@ var global = {
 
     // Canvas
     screenWidth: window.innerWidth,
-    screenHeight: window.innerHeight,
+    screenHeight: window.innerHeight - $('header').height(),
     gameWidth: 0,
     gameHeight: 0,
     xoffset: -0,
@@ -35,6 +35,6 @@ var global = {
     continuity: false,
     startPingTime: 0,
     toggleMassState: 0, //???
-    backgroundColor: '#f2fbff',
-    lineColor: '#000000',
+    backgroundColor: '#31035f',
+    lineColor: '#fff',
 };

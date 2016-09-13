@@ -90,7 +90,7 @@ function setUpSocket(socket) {
 		global.player = player;
 		socket.emit('gotit', player);
 		global.gameStart = true;
-		c.focus();
+		c.focus(); // do we need this since we're tabindex?
 	});
 
 	socket.on('gameSetup', function(data) {
@@ -175,15 +175,15 @@ function gameLoop() {
             graph.fillStyle = global.backgroundColor;
             graph.fillRect(0, 0, global.screenWidth, global.screenHeight);
 
-            drawgrid();
+            diamondgrid(25, 25, 1370, 979);
             //Not ready for these yet.
             //resources.forEach(drawResources);
             //soldiers.forEach(drawSoldiers);
             //workers.forEach(drawWorkers);
 
-            /*if (global.borderDraw) {
+            if (global.borderDraw) {
                 drawborder();
-            }*/
+            }
             var orderTents = [];
             for(var i=0; i<users.length; i++) {
                 for(var j=0; j<users[i].tents.length; j++) {
@@ -278,6 +278,45 @@ function drawgrid() {
 		// graph.rotate(20*Math.PI/180);
     graph.stroke();
     graph.globalAlpha = 1;
+}
+
+function diamondgrid(width, height, totalWidth, totalHeight){
+    // graph.clearRect(0, 0, global.screenWidth, global.screenHeight);
+    graph.globalAlpha = .5;
+    graph.strokeStyle = '#fff';
+    graph.lineWidth = 1;
+    graph.beginPath();
+    var x = 0 - player.x;
+    var y = 0;
+    var z = 0;
+    var blockWidth = width || 25;
+    var blockHeight = height || 25;
+    var counter = 0;
+    for(var i = 0; i < Math.round(totalWidth/totalHeight); i++){
+
+        var z = counter;
+        while(x <= blockWidth*Math.round(totalWidth/totalHeight)){
+
+            if(z % 2 == 0){
+                graph.moveTo( x, y+blockWidth );
+                graph.lineTo( x+blockWidth, y );
+            } else {
+                graph.moveTo(x,y);
+                graph.lineTo(x+blockWidth, y+blockWidth);
+            }
+
+            x += blockWidth;
+            z += 1;
+        }
+
+        x = 0;
+        y = y + blockWidth;
+        counter += 1;
+
+    }
+
+    graph.stroke();
+    // console.log('creation kit');
 }
 
 function drawPlayers(order) { //handles player animation
@@ -384,4 +423,49 @@ function resize() {
 	player.screenWidth = c.width = global.screenWidth ? window.innerWidth : global.gameWidth;
 	player.screenHeight = c.height = global.screenHeight ? window.innerHeight : global.gameHeight;
 	socket.emit('windowResized', { screenWidth: global.screenWidth, screenHeight: global.screenHeight });
+}
+
+function drawborder() {
+    graph.lineWidth = 1;
+    graph.strokeStyle = playerConfig.borderColor;
+
+    // Left-vertical.
+    if (player.x <= global.screenWidth/2) {
+        graph.beginPath();
+        graph.moveTo(global.screenWidth/2 - player.x, 0 ? player.y > global.screenHeight/2 : global.screenHeight/2 - player.y);
+        graph.lineTo(global.screenWidth/2 - player.x, global.gameHeight + global.screenHeight/2 - player.y);
+        graph.strokeStyle = global.lineColor;
+        graph.stroke();
+    }
+
+    // Top-horizontal.
+    if (player.y <= global.screenHeight/2) {
+        graph.beginPath();
+        graph.moveTo(0 ? player.x > global.screenWidth/2 : global.screenWidth/2 - player.x, global.screenHeight/2 - player.y);
+        graph.lineTo(global.gameWidth + global.screenWidth/2 - player.x, global.screenHeight/2 - player.y);
+        graph.strokeStyle = global.lineColor;
+        graph.stroke();
+    }
+
+    // Right-vertical.
+    if (global.gameWidth - player.x <= global.screenWidth/2) {
+        graph.beginPath();
+        graph.moveTo(global.gameWidth + global.screenWidth/2 - player.x,
+                     global.screenHeight/2 - player.y);
+        graph.lineTo(global.gameWidth + global.screenWidth/2 - player.x,
+                     global.gameHeight + global.screenHeight/2 - player.y);
+        graph.strokeStyle = global.lineColor;
+        graph.stroke();
+    }
+
+    // Bottom-horizontal.
+    if (global.gameHeight - player.y <= global.screenHeight/2) {
+        graph.beginPath();
+        graph.moveTo(global.gameWidth + global.screenWidth/2 - player.x,
+                     global.gameHeight + global.screenHeight/2 - player.y);
+        graph.lineTo(global.screenWidth/2 - player.x,
+                     global.gameHeight + global.screenHeight/2 - player.y);
+        graph.strokeStyle = global.lineColor;
+        graph.stroke();
+    }
 }
